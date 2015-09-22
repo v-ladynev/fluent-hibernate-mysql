@@ -17,9 +17,11 @@ public class MySqlExample {
     private static final Logger LOG = Logger.getLogger(MySqlExample.class);
 
     public static void main(String[] args) {
-        HibernateSessionFactory.createSessionFactory("hibernate.cfg.xml");
         try {
+            HibernateSessionFactory.createSessionFactory("hibernate.cfg.xml");
             new MySqlExample().doSomeDatabaseStuff();
+        } catch (Throwable th) {
+            th.printStackTrace();
         } finally {
             HibernateSessionFactory.closeSessionFactory();
         }
