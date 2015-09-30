@@ -5,6 +5,7 @@ import org.jboss.logging.Logger;
 import com.github.fluent.hibernate.H;
 import com.github.fluent.hibernate.HibernateSessionFactory;
 import com.github.fluent.hibernate.example.mysql.persistent.User;
+import com.github.fluent.hibernate.example.mysql.persistent.UserAddress;
 
 /**
  *
@@ -12,19 +13,17 @@ import com.github.fluent.hibernate.example.mysql.persistent.User;
  */
 public class MySqlExample {
 
-    private static final User USER_A = createUser("loginA", "A user", 20);
+    private static final String USER_A_STREET = "street A";
 
-    private static final User USER_B = createUser("loginB", "B user", 30);
+    private static final String USER_LOGIN_A = "loginA";
 
     private static final Logger LOG = Logger.getLogger(MySqlExample.class);
 
     public static void main(String[] args) {
         try {
             HibernateSessionFactory.Builder.configureFromDefaultHibernateCfgXml()
-                    .createSessionFactory();
+            .createSessionFactory();
             new MySqlExample().doSomeDatabaseStuff();
-        } catch (Throwable th) {
-            th.printStackTrace();
         } finally {
             HibernateSessionFactory.closeSessionFactory();
         }
@@ -34,11 +33,36 @@ public class MySqlExample {
         deleteAllUsers();
         insertUsers();
         countUsers();
-        User user = findUser(USER_A.getLogin());
+        findUserA();
+        doSomeUserAddressStuff();
+    }
+
+    private void doSomeUserAddressStuff() {
+        getUserByStreet();
+        getStreetByUser();
+    }
+
+    private void getUserByStreet() {
+        User user = H.<User> request(User.class).innerJoin("address")
+                .eq("address.street", USER_A_STREET).first();
+
+        LOG.info(String.format("User %s address: %s", user, user.getAddress()));
+    }
+
+    private void getStreetByUser() {
+        final String userLogin = USER_LOGIN_A;
+        UserAddress address = H.<UserAddress> request(UserAddress.class).innerJoin("user")
+                .eq("user.login", userLogin).first();
+        // LOG.info(String.format("Street by user login '%s': %s", userLogin, street));
+        LOG.info(String.format("UserAddress: %s", address));
+    }
+
+    private void findUserA() {
+        User user = findUserByLogin(USER_LOGIN_A);
         LOG.info("User: " + user);
     }
 
-    private User findUser(String login) {
+    private User findUserByLogin(String login) {
         return H.<User> request(User.class).eq(User.LOGIN, login).first();
     }
 
@@ -57,19 +81,15 @@ public class MySqlExample {
     }
 
     public static User userA() {
-        return USER_A.cloneUser();
+        return addAddress(User.create(USER_LOGIN_A, "A user", 20), USER_A_STREET);
     }
 
     public static User userB() {
-        return USER_B.cloneUser();
+        return addAddress(User.create("loginB", "B user", 30), "street B");
     }
 
-    private static User createUser(String login, String name, int age) {
-        User result = new User();
-        result.setLogin(login);
-        result.setName(name);
-        result.setAge(age);
-        return result;
+    public static User addAddress(User toUser, String street) {
+        toUser.setAddress(UserAddress.create(street, toUser));
+        return toUser;
     }
-
 }

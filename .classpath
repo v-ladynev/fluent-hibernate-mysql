@@ -12,6 +12,6 @@
 	<classpathentry kind="lib" path="libs/jboss-logging-3.3.0.Final.jar"/>
 	<classpathentry kind="lib" path="libs/mysql-connector-java-5.1.36.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/fluent-hibernate-0.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/fluent-hibernate-0.1.2.jar" sourcepath="/fluent-hibernate-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
