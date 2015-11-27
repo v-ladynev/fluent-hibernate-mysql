@@ -3,9 +3,9 @@ package com.github.fluent.hibernate.example.mysql;
 import org.jboss.logging.Logger;
 
 import com.github.fluent.hibernate.H;
-import com.github.fluent.hibernate.HibernateSessionFactory;
 import com.github.fluent.hibernate.example.mysql.persistent.User;
 import com.github.fluent.hibernate.example.mysql.persistent.UserAddress;
+import com.github.fluent.hibernate.factory.HibernateSessionFactory;
 
 /**
  *
@@ -21,12 +21,23 @@ public class MySqlExample {
 
     public static void main(String[] args) {
         try {
-            HibernateSessionFactory.Builder.configureFromDefaultHibernateCfgXml()
-            .createSessionFactory();
+            confgiureForMySql();
+            // confgiureForH2();
             new MySqlExample().doSomeDatabaseStuff();
         } finally {
             HibernateSessionFactory.closeSessionFactory();
         }
+    }
+
+    private static void confgiureForMySql() {
+        HibernateSessionFactory.Builder.configureFromDefaultHibernateCfgXml()
+                .createSessionFactory();
+    }
+
+    private static void confgiureForH2() {
+        HibernateSessionFactory.Builder.configureFromDefaultHibernateCfgXml()
+        .addHibernatePropertiesFromClassPathResource("hibernate-h2.properties")
+                .createSessionFactory();
     }
 
     private void doSomeDatabaseStuff() {
@@ -53,7 +64,6 @@ public class MySqlExample {
         final String userLogin = USER_LOGIN_A;
         UserAddress address = H.<UserAddress> request(UserAddress.class).innerJoin("user")
                 .eq("user.login", userLogin).first();
-        // LOG.info(String.format("Street by user login '%s': %s", userLogin, street));
         LOG.info(String.format("UserAddress: %s", address));
     }
 

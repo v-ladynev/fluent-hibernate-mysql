@@ -15,7 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
- * Ann user address.
+ * An user address.
  *
  * @author V.Ladynev
  * @version $Id$
