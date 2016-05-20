@@ -1,11 +1,18 @@
 package com.github.fluent.hibernate.example.mysql;
 
+import java.util.List;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 import org.jboss.logging.Logger;
 
 import com.github.fluent.hibernate.H;
+import com.github.fluent.hibernate.cfg.Fluent;
+import com.github.fluent.hibernate.cfg.scanner.EntityScanner;
 import com.github.fluent.hibernate.example.mysql.persistent.User;
 import com.github.fluent.hibernate.example.mysql.persistent.UserAddress;
-import com.github.fluent.hibernate.factory.HibernateSessionFactory;
 
 /**
  *
@@ -23,21 +30,58 @@ public class MySqlExample {
         try {
             confgiureForMySql();
             // confgiureForH2();
+            // confgiureUsingHibernate4();
+            // confgiureUsingHibernate5();
             new MySqlExample().doSomeDatabaseStuff();
         } finally {
-            HibernateSessionFactory.closeSessionFactory();
+            Fluent.factory().close();
         }
     }
 
     private static void confgiureForMySql() {
-        HibernateSessionFactory.Builder.configureFromDefaultHibernateCfgXml()
-                .createSessionFactory();
+        Fluent.factory().dontUseHibernateCfgXml().useNamingStrategy()
+                .scanPackages("com.github.fluent.hibernate.example.mysql.persistent").build();
+
+        // Fluent.factory().useNamingStrategy().build();
     }
 
     private static void confgiureForH2() {
-        HibernateSessionFactory.Builder.configureFromDefaultHibernateCfgXml()
-        .addHibernatePropertiesFromClassPathResource("hibernate-h2.properties")
-                .createSessionFactory();
+        Fluent.factory().hibernatePropertiesFromClassPathResource("hibernate-h2.properties")
+                .useNamingStrategy().build();
+    }
+
+    private static void confgiureUsingHibernate4() {
+        Configuration configuration = new Configuration().configure();
+
+        StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+        // registryBuilder.loadProperties("hibernate-h2.properties");
+        SessionFactory sessionFactory = configuration.buildSessionFactory(
+                registryBuilder.applySettings(configuration.getProperties()).build());
+
+        Fluent.configureFromExistingSessionFactory(sessionFactory);
+    }
+
+    private static void confgiureUsingHibernate5() {
+        /*
+        Configuration configuration = new Configuration();
+        
+        EntityScanner.scanPackages("com.github.fluent.hibernate.example.mysql.persistent")
+                .addTo(configuration);
+        
+        SessionFactory sessionFactory = configuration.buildSessionFactory();
+        */
+
+        List<Class<?>> classes = EntityScanner
+                .scanPackages("com.github.fluent.hibernate.example.mysql.persistent").result();
+
+        MetadataSources metadataSources = new MetadataSources();
+        for (Class<?> annotatedClass : classes) {
+            metadataSources.addAnnotatedClass(annotatedClass);
+        }
+
+        SessionFactory sessionFactory = metadataSources.buildMetadata().buildSessionFactory();
+
+        Fluent.configureFromExistingSessionFactory(sessionFactory);
     }
 
     private void doSomeDatabaseStuff() {

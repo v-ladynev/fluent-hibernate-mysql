@@ -1,0 +1,11 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.hbm2ddl.auto">create-drop</property>
+        <mapping class="com.github.fluent.hibernate.example.mysql.persistent.User" />
+        <mapping class="com.github.fluent.hibernate.example.mysql.persistent.UserAddress" />
+    </session-factory>
+</hibernate-configuration>

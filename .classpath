@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="libs/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="libs/fluent-hibernate-core-0.1.4.jar"/>
+	<classpathentry kind="lib" path="libs/fluent-hibernate-core-0.2.0.jar" sourcepath="/fluent-hibernate-core"/>
 	<classpathentry kind="lib" path="libs/geronimo-jta_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="libs/h2-1.4.190.jar"/>
 	<classpathentry kind="lib" path="libs/hibernate-commons-annotations-5.0.0.Final.jar"/>

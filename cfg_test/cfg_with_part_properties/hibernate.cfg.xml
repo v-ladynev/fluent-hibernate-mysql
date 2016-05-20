@@ -1,0 +1,13 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/fluent</property>
+        <property name="hibernate.connection.username">fluent</property>
+        <property name="hibernate.connection.password">fluent</property>
+        <mapping class="com.github.fluent.hibernate.example.mysql.persistent.User" />
+        <mapping class="com.github.fluent.hibernate.example.mysql.persistent.UserAddress" />
+    </session-factory>
+</hibernate-configuration>
