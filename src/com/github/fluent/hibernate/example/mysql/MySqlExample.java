@@ -1,18 +1,17 @@
 package com.github.fluent.hibernate.example.mysql;
 
-import java.util.List;
-
+import com.github.fluent.hibernate.H;
+import com.github.fluent.hibernate.cfg.Fluent;
+import com.github.fluent.hibernate.cfg.scanner.EntityScanner;
+import com.github.fluent.hibernate.example.mysql.persistent.User;
+import com.github.fluent.hibernate.example.mysql.persistent.UserAddress;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.jboss.logging.Logger;
 
-import com.github.fluent.hibernate.H;
-import com.github.fluent.hibernate.cfg.Fluent;
-import com.github.fluent.hibernate.cfg.scanner.EntityScanner;
-import com.github.fluent.hibernate.example.mysql.persistent.User;
-import com.github.fluent.hibernate.example.mysql.persistent.UserAddress;
+import java.util.List;
 
 /**
  *
@@ -46,7 +45,9 @@ public class MySqlExample {
     }
 
     private static void confgiureForH2() {
-        Fluent.factory().hibernatePropertiesFromClassPathResource("hibernate-h2.properties")
+        Fluent.factory().dontUseHibernateCfgXml()
+                .hibernatePropertiesFromClassPathResource("hibernate-h2.properties")
+                .scanPackages("com.github.fluent.hibernate.example.mysql.persistent")
                 .useNamingStrategy().build();
     }
 
